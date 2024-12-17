@@ -1,0 +1,8 @@
+/data/home/milinbhade/miniconda3/envs/huggingface/lib/python3.9/site-packages/gym/utils/passive_env_checker.py:233: DeprecationWarning: `np.bool8` is a deprecated alias for `np.bool_`.  (Deprecated NumPy 1.24)
+  if not isinstance(terminated, (bool, np.bool8)):
+/data/home/milinbhade/miniconda3/envs/huggingface/lib/python3.9/site-packages/gym/utils/passive_env_checker.py:252: UserWarning: [33mWARN: The reward returned by `step()` must be a float, int, np.integer or np.floating, actual type: <class 'torch.Tensor'>[0m
+  logger.warn(
+avg_reward_ca= -6.498536205291748
+sdt_reward_ca =  0.4067130402330713
+Compute time =  14.572830080986023
+FinishedTraining

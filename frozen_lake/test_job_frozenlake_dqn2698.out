@@ -1,0 +1,8 @@
+/data/home/milinbhade/miniconda3/envs/huggingface/lib/python3.9/site-packages/gym/utils/passive_env_checker.py:233: DeprecationWarning: `np.bool8` is a deprecated alias for `np.bool_`.  (Deprecated NumPy 1.24)
+  if not isinstance(terminated, (bool, np.bool8)):
+/data/home/milinbhade/miniconda3/envs/huggingface/lib/python3.9/site-packages/torch/nn/modules/loss.py:939: UserWarning: Using a target size (torch.Size([1])) that is different to the input size (torch.Size([])). This will likely lead to incorrect results due to broadcasting. Please ensure they have the same size.
+  return F.smooth_l1_loss(input, target, reduction=self.reduction, beta=self.beta)
+avg_reward_q= 0.00287
+compute_time = 15.531200551986695
+sdt_reward_q = 0.0023744683615495913
+FinishedTraining

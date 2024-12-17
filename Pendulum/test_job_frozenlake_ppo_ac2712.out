@@ -1,0 +1,22 @@
+/data/home/milinbhade/miniconda3/envs/huggingface/lib/python3.9/site-packages/gym/utils/passive_env_checker.py:233: DeprecationWarning: `np.bool8` is a deprecated alias for `np.bool_`.  (Deprecated NumPy 1.24)
+  if not isinstance(terminated, (bool, np.bool8)):
+/data/home/milinbhade/miniconda3/envs/huggingface/lib/python3.9/site-packages/gym/utils/passive_env_checker.py:252: UserWarning: [33mWARN: The reward returned by `step()` must be a float, int, np.integer or np.floating, actual type: <class 'torch.Tensor'>[0m
+  logger.warn(
+/data/home/milinbhade/Prashansa/Pendulum/PPO_actor_critic.py:172: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  surr1 = torch.tensor(surr1, requires_grad=True)
+/data/home/milinbhade/Prashansa/Pendulum/PPO_actor_critic.py:173: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  surr2 = torch.tensor(surr2, requires_grad=True)
+completed training
+completed training
+completed training
+completed training
+completed training
+completed training
+completed training
+completed training
+completed training
+completed training
+avg_reward_ppo_ac= -6.393125343322754
+Compute time =  67.68234221935272
+sdt_reward_ppo_ac=  0.3868769669033223
+FinishedTraining

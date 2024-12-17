@@ -1,0 +1,6 @@
+/data/home/milinbhade/miniconda3/envs/huggingface/lib/python3.9/site-packages/gym/utils/passive_env_checker.py:233: DeprecationWarning: `np.bool8` is a deprecated alias for `np.bool_`.  (Deprecated NumPy 1.24)
+  if not isinstance(terminated, (bool, np.bool8)):
+avg_reward_ac= 0.00369
+compute_time_ac = 24.001257252693176
+sdt_reward_ac = 0.0027500727263110696
+FinishedTraining
