@@ -1,1 +1,1 @@
-Please note that the experimental results may vary depending on the initial seeds used.
+We consider three distinct environments. Within each environment, we evaluate six different algorithms: Critic-Actor, Actor-Critic, DQN, PPO AC, PPO CA and single timescale AC. It is important to note that the performance of these algorithms may vary depending on the initial seeds used.
