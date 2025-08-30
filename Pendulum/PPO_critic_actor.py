@@ -8,7 +8,7 @@ from numpy.random import randint
 from numpy.random import choice
 from matplotlib import pyplot as plt
 import random as rnd
-import gym
+import gymnasium as gym
 import random as rnd
 from gym.wrappers import FlattenObservation
 import math
@@ -21,6 +21,9 @@ class valuefunction(nn.Module):
         super(valuefunction,self).__init__()
         self.l1 = nn.Linear(n1,n2)
         self.l2 = nn.Linear(n2,n3)
+        # Initialize weights with smaller values
+        nn.init.xavier_uniform_(self.l1.weight)
+        nn.init.xavier_uniform_(self.l2.weight)
         
     def forward(self,x):
         x =self.l1(x)
@@ -33,12 +36,21 @@ class policyparameter(nn.Module):
         super(policyparameter,self).__init__()
         self.l1 = nn.Linear(n1,n2)
         self.l2 = nn.Linear(n2,n3)
+        # Initialize weights with smaller values
+        nn.init.xavier_uniform_(self.l1.weight)
+        nn.init.xavier_uniform_(self.l2.weight)
         
     def forward(self,x):
-         x =self.l1(x)
+         x = self.l1(x)
          x = torch.relu(x)
          x = self.l2(x)
+         # Clamp logits to prevent extreme values
+         x = torch.clamp(x, min=-10, max=10)
          x = torch.softmax(x, dim=0)
+         # Add small epsilon to prevent exact zeros
+         x = x + 1e-8
+         # Renormalize to ensure it sums to 1
+         x = x / torch.sum(x)
          return x
     
 class QNN(nn.Module):
