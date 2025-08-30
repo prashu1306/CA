@@ -19,6 +19,9 @@ class valuefunction(nn.Module):
         super(valuefunction,self).__init__()
         self.l1 = nn.Linear(n1,n2)
         self.l2 = nn.Linear(n2,n3)
+        # Initialize weights with smaller values
+        nn.init.xavier_uniform_(self.l1.weight)
+        nn.init.xavier_uniform_(self.l2.weight)
         
     def forward(self,x):
         x =self.l1(x)
@@ -31,12 +34,21 @@ class policyparameter(nn.Module):
         super(policyparameter,self).__init__()
         self.l1 = nn.Linear(n1,n2)
         self.l2 = nn.Linear(n2,n3)
+        # Initialize weights with smaller values
+        nn.init.xavier_uniform_(self.l1.weight)
+        nn.init.xavier_uniform_(self.l2.weight)
         
     def forward(self,x):
-         x =self.l1(x)
+         x = self.l1(x)
          x = torch.relu(x)
          x = self.l2(x)
+         # Clamp logits to prevent extreme values
+         x = torch.clamp(x, min=-10, max=10)
          x = torch.softmax(x, dim=0)
+         # Add small epsilon to prevent exact zeros
+         x = x + 1e-8
+         # Renormalize to ensure it sums to 1
+         x = x / torch.sum(x)
          return x
     
 class QNN(nn.Module):
@@ -100,8 +112,15 @@ def find_old_log_probs(policy , value):
   count = 1
   while(count <=batch_length):
     probs=policy(feat(state))
-    if(torch.isnan(probs).any()):
-            probs = torch.tensor([0.25,0.25,0.25,0.25], requires_grad=True)
+    # Check for NaN/Inf and handle it properly
+    if torch.isnan(probs).any() or torch.isinf(probs).any():
+        print(f"Warning: NaN/Inf detected in probs at batch step {count}")
+        probs = torch.tensor([0.25,0.25,0.25,0.25], requires_grad=True)
+    
+    # Ensure probs are valid probabilities
+    if torch.sum(probs) == 0:
+        probs = torch.tensor([0.25,0.25,0.25,0.25], requires_grad=True)
+        
     action_ = Categorical(probs).sample()
     action = getaction(action_)
     next_state,reward,terminated,truncated ,info= env.step(action)
@@ -124,8 +143,9 @@ def train():
     #np.random.seed(seed)
     value = valuefunction(d1,d2,d3)
     policy = policyparameter(d1,d2,nA)
-    voptim = torch.optim.SGD(value.parameters(),lr = 1.5)
-    poptim = torch.optim.SGD(policy.parameters(),lr = 1.5)
+    # Reduced learning rates for stability
+    voptim = torch.optim.SGD(value.parameters(),lr = 0.01)
+    poptim = torch.optim.SGD(policy.parameters(),lr = 0.01)
     lambda1 = lambda epoch : (1 + epoch)**(-0.4)
     lambda2 = lambda epoch : (1 + epoch)**(-0.6)  
     vscheduler = LambdaLR(voptim,lambda1)
@@ -144,8 +164,15 @@ def train():
         m = 1
         i = 0
         probs=policy(feat(state))
-        if(torch.isnan(probs).any()):
+        # Check for NaN/Inf and handle it properly
+        if torch.isnan(probs).any() or torch.isinf(probs).any():
+            print(f"Warning: NaN/Inf detected in probs at training iteration {n}")
             probs = torch.tensor([0.25,0.25,0.25,0.25], requires_grad=True)
+        
+        # Ensure probs are valid probabilities
+        if torch.sum(probs) == 0:
+            probs = torch.tensor([0.25,0.25,0.25,0.25], requires_grad=True)
+            
         action_ = Categorical(probs).sample()
         action = getaction(action_)
         next_state,reward,terminated,truncated ,info= env.step(action)
@@ -218,8 +245,15 @@ def PPO_actor_critic(seed):
     while n <=N:
         
         probs=policy(feat(state))
-        if(torch.isnan(probs).any()):
-            probs = torch.tensor([0.25,0.25,0.25,0.25], requires_grad=True)
+        # Check for NaN/Inf and handle it properly
+        if torch.isnan(probs).any() or torch.isinf(probs).any():
+            print(f"Warning: NaN/Inf detected in probs at evaluation step {n}")
+            probs = torch.tensor([0.25,0.25,0.25,0.25], requires_grad=False)
+        
+        # Ensure probs are valid probabilities
+        if torch.sum(probs) == 0:
+            probs = torch.tensor([0.25,0.25,0.25,0.25], requires_grad=False)
+            
         action_ = Categorical(probs).sample()
         action = getaction(action_)
         next_state,reward,terminated,truncated ,info= env.step(action)
